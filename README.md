@@ -2,8 +2,10 @@
 
 ## Urls
 
-* [PyPI Homepage](https://pypi.org/project/dm-logger/)
+* [PyPI](https://pypi.org/project/dm-logger/)
 * [GitHub](https://github.com/DIMKA4621/dm-logger)
+
+![upd_icon](.resources/upd_icon.png)
 
 ## Initial parameters
 
