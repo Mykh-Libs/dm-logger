@@ -21,7 +21,8 @@ custom_logger.info()
 ```python
          name: str  # logger name (*required)
 logging_level: str = "DEBUG",  # min logging level
-logs_dir_path: str = "logs",  # parent logs dirs
+logs_dir_path: str = "logs",  # log parent directories, leave blank to not write
+   print_logs: bool = True,  # print to the console or not
     file_name: str = "",  # log file name, default = <name>.log
    write_mode: Literal["a", "w"] = "w",  # start with new file or continue old one
        max_MB: int = 5,  # max log file size (MB)
