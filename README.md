@@ -1,20 +1,9 @@
 # DM-Logger
 
-## Example
+## Urls
 
-```python
-from dm_logger import DMLogger
-
-custom_logger = DMLogger("main")
-
-custom_logger.info("test message", tag="test tag")
-custom_logger.debug("new message", id=123312)
-custom_logger.info("only mess")
-custom_logger.critical(env="production")
-custom_logger.warning({"key": "value"})
-custom_logger.error(["item1", "item2", 3])
-custom_logger.info()
-```
+* [PyPI Homepage](https://pypi.org/project/dm-logger/)
+* [GitHub](https://github.com/DIMKA4621/dm-logger)
 
 ## Initial parameters
 
@@ -29,3 +18,23 @@ logs_dir_path: str = "logs",  # log parent directories, leave blank to not write
     max_count: int = 10,  # max count of saved logs
 format_string: str = "%(asctime)s.%(msecs)03d [%(levelname)s] (%(module)s.%(funcName)s:%(lineno)d) %(message)s",
 ```
+
+## Usage
+
+```python
+from dm_logger import DMLogger
+
+dm_logger = DMLogger("main")
+
+dm_logger.info("test message", tag="test tag")
+dm_logger.debug("new message", id=123312)
+dm_logger.info("only mess")
+dm_logger.critical(env="production")
+dm_logger.warning({"key": "value"})
+dm_logger.error(["item1", "item2", 3])
+dm_logger.info()
+```
+
+## Requirements
+
+Python 3.7 or higher.
