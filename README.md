@@ -19,7 +19,7 @@ logs_dir_path: str = "logs",  # log parent directories, leave blank to not write
 format_string: str = "%(asctime)s.%(msecs)03d [%(levelname)s] (%(module)s.%(funcName)s:%(lineno)d) %(message)s",
 ```
 
-## Usage
+## Example
 
 ```python
 from dm_logger import DMLogger
