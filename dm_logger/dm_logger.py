@@ -102,7 +102,7 @@ class DMLogger:
         if kwargs:
             dict_string = re.sub(r"'(\w+)':", r"\1:", str(kwargs))
             message = f"{dict_string} {message}"
-        level_func(message)
+        level_func(message, stacklevel=3)
 
     def _get_format_string(self, format_string: str, show_name_label: bool, show_place_label: bool) -> str:
         format_string = format_string or self.default_format_string
