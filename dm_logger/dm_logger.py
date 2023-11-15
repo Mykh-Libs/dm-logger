@@ -1,6 +1,7 @@
 from logging.handlers import RotatingFileHandler
 from typing import Callable, Literal
 import logging
+import inspect
 import os.path
 import sys
 import re
@@ -18,6 +19,7 @@ class WarningErrorCriticalFilter(logging.Filter):
 
 class DMLogger:
     _loggers = {}
+    default_format_string = "%(asctime)s.%(msecs)03d [%(levelname)s] [%(name)s] (%(module)s.%(funcName)s:%(lineno)d) %(message)s"
 
     def __new__(cls, name, *args, **kwargs):
         if name in cls._loggers:
@@ -37,7 +39,9 @@ class DMLogger:
         write_mode: Literal["a", "w"] = "w",
         max_MB: int = 5,
         max_count: int = 10,
-        format_string: str = "%(asctime)s.%(msecs)03d [%(levelname)s] (%(module)s.%(funcName)s:%(lineno)d) %(message)s",
+        show_name_label: bool = False,
+        show_place_label: bool = False,
+        format_string: str = None,
     ):
         if hasattr(self, '_initialized'):
             return
@@ -46,6 +50,7 @@ class DMLogger:
         self._logger = logging.getLogger(name)
         level = logging.getLevelName(logging_level.upper())
         self._logger.setLevel(level)
+        format_string = self._get_format_string(format_string, show_name_label, show_place_label)
         formatter = logging.Formatter(format_string, datefmt='%d-%m-%Y %H:%M:%S')
 
         if logs_dir_path:
@@ -98,3 +103,13 @@ class DMLogger:
             dict_string = re.sub(r"'(\w+)':", r"\1:", str(kwargs))
             message = f"{dict_string} {message}"
         level_func(message)
+
+    def _get_format_string(self, format_string: str, show_name_label: bool, show_place_label: bool) -> str:
+        format_string = format_string or self.default_format_string
+        if format_string != self.default_format_string:
+            return format_string
+        if not show_name_label:
+            format_string = format_string.replace("[%(name)s] ", "")
+        if not show_place_label:
+            format_string = format_string.replace("(%(module)s.%(funcName)s:%(lineno)d) ", "")
+        return format_string
