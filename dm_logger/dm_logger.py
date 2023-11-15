@@ -6,7 +6,27 @@ import sys
 import re
 
 
+class DebugInfoFilter(logging.Filter):
+    def filter(self, record):
+        return record.levelno in (logging.DEBUG, logging.INFO)
+
+
+class WarningErrorCriticalFilter(logging.Filter):
+    def filter(self, record):
+        return record.levelno in (logging.WARNING, logging.ERROR, logging.CRITICAL)
+
+
 class DMLogger:
+    _loggers = {}
+
+    def __new__(cls, name, *args, **kwargs):
+        if name in cls._loggers:
+            return cls._loggers[name]
+        else:
+            instance = super(DMLogger, cls).__new__(cls)
+            cls._loggers[name] = instance
+            return instance
+
     def __init__(
         self,
         name: str,
@@ -19,6 +39,10 @@ class DMLogger:
         max_count: int = 10,
         format_string: str = "%(asctime)s.%(msecs)03d [%(levelname)s] (%(module)s.%(funcName)s:%(lineno)d) %(message)s",
     ):
+        if hasattr(self, '_initialized'):
+            return
+        self._initialized = True
+
         self._logger = logging.getLogger(name)
         level = logging.getLevelName(logging_level.upper())
         self._logger.setLevel(level)
@@ -74,11 +98,3 @@ class DMLogger:
             dict_string = re.sub(r"'(\w+)':", r"\1:", str(kwargs))
             message = f"{dict_string} {message}"
         level_func(message)
-
-class DebugInfoFilter(logging.Filter):
-    def filter(self, record):
-        return record.levelno in (logging.DEBUG, logging.INFO)
-
-class WarningErrorCriticalFilter(logging.Filter):
-    def filter(self, record):
-        return record.levelno in (logging.WARNING, logging.ERROR, logging.CRITICAL)
