@@ -20,14 +20,6 @@ class DMLogger:
     _loggers = {}
     default_format_string = "%(asctime)s.%(msecs)03d [%(levelname)s] [%(name)s] (%(module)s.%(funcName)s:%(lineno)d) %(message)s"
 
-    def __new__(cls, name, *args, **kwargs):
-        if name in cls._loggers:
-            return cls._loggers[name]
-        else:
-            instance = super(DMLogger, cls).__new__(cls)
-            cls._loggers[name] = instance
-            return instance
-
     def __init__(
         self,
         name: str,
@@ -80,6 +72,14 @@ class DMLogger:
             self._logger.addHandler(stdout_handler)
             self._logger.addHandler(stderr_handler)
 
+    def __new__(cls, name, *args, **kwargs):
+        if name in cls._loggers:
+            return cls._loggers[name]
+        else:
+            instance = super(DMLogger, cls).__new__(cls)
+            cls._loggers[name] = instance
+            return instance
+
     def debug(self, message: any = None, **kwargs) -> None:
         self._log(self._logger.debug, message, **kwargs)
 
@@ -97,7 +97,7 @@ class DMLogger:
 
     @staticmethod
     def _log(level_func: Callable, message: any, **kwargs) -> None:
-        message = "- " + str(message) if not (message is None) else ""
+        message = "-- " + str(message) if not (message is None) else ""
         if kwargs:
             dict_string = re.sub(r"'(\w+)':", r"\1:", str(kwargs))
             message = f"{dict_string} {message}"
