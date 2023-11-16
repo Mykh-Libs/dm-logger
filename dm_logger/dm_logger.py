@@ -1,7 +1,6 @@
 from logging.handlers import RotatingFileHandler
 from typing import Callable, Literal
 import logging
-import inspect
 import os.path
 import sys
 import re
