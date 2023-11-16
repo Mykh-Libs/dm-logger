@@ -1,67 +1,45 @@
 from logging.handlers import RotatingFileHandler
-from typing import Callable, Literal
+from typing import Callable
 import logging
-import os.path
-import sys
 import re
-from .filters import DebugInfoFilter, WarningErrorCriticalFilter
+from .file_handlers import get_format_string, get_rotating_file_handler
+from .stream_handlers import get_stdout_handler, get_stderr_handler
+from .options import Options
 
 
 class DMLogger:
-    _loggers = {}
-    default_format_string = "%(asctime)s.%(msecs)03d [%(levelname)s] [%(name)s] (%(module)s.%(funcName)s:%(lineno)d) %(message)s"
+    options: Options = Options
+    _loggers: dict = {}
+    _file_handlers: dict = {}
 
     def __init__(
         self,
         name: str,
-        logging_level: str = "DEBUG",
-        logs_dir_path: str = "logs",
-        print_logs: bool = True,
-        file_name: str = "",
-        write_mode: Literal["a", "w"] = "w",
-        max_MB: int = 5,
-        max_count: int = 10,
-        show_name_label: bool = False,
-        show_place_label: bool = False,
-        format_string: str = None,
+        level: str = "DEBUG",
+        write_logs: bool = True,
+        print_logs: bool = True
     ):
         if hasattr(self, '_initialized'):
             return
         self._initialized = True
 
         self._logger = logging.getLogger(name)
-        level = logging.getLevelName(logging_level.upper())
+        level = logging.getLevelName(level.upper())
         self._logger.setLevel(level)
-        format_string = self._get_format_string(format_string, show_name_label, show_place_label)
-        formatter = logging.Formatter(format_string, datefmt='%d-%m-%Y %H:%M:%S')
+        options = DMLogger.options
+        formatter = logging.Formatter(get_format_string(options), datefmt='%d-%m-%Y %H:%M:%S')
 
-        if logs_dir_path:
-            logs_dir_path = os.path.normpath(logs_dir_path)
-            if not os.path.exists(logs_dir_path):
-                os.makedirs(logs_dir_path)
-            file_name = file_name or f"{name}.log"
-            log_path = os.path.join(logs_dir_path, file_name)
-            is_exists_log = os.path.exists(log_path)
-
-            file_handler = RotatingFileHandler(log_path, maxBytes=max_MB * 1024 * 1024, backupCount=max_count)
-            if write_mode == "w" and is_exists_log:
-                file_handler.doRollover()
-            file_handler.setFormatter(formatter)
-            self._logger.addHandler(file_handler)
+        if write_logs:
+            if options.file_name in DMLogger._file_handlers:
+                rotating_file_handler = DMLogger._file_handlers.get(options.file_name)
+            else:
+                rotating_file_handler = get_rotating_file_handler(options, formatter)
+                DMLogger._file_handlers[options.file_name] = rotating_file_handler
+            self._logger.addHandler(rotating_file_handler)
 
         if print_logs:
-            stdout_handler = logging.StreamHandler(sys.stdout)
-            stdout_handler.setLevel(logging.DEBUG)
-            stdout_handler.addFilter(DebugInfoFilter())
-            stdout_handler.setFormatter(formatter)
-
-            stderr_handler = logging.StreamHandler(sys.stderr)
-            stderr_handler.setLevel(logging.WARNING)
-            stderr_handler.addFilter(WarningErrorCriticalFilter())
-            stderr_handler.setFormatter(formatter)
-
-            self._logger.addHandler(stdout_handler)
-            self._logger.addHandler(stderr_handler)
+            self._logger.addHandler(get_stdout_handler(formatter))
+            self._logger.addHandler(get_stderr_handler(formatter))
 
     def __new__(cls, name, *args, **kwargs):
         if name in cls._loggers:
@@ -93,13 +71,3 @@ class DMLogger:
             dict_string = re.sub(r"'(\w+)':", r"\1:", str(kwargs))
             message = f"{dict_string} {message}"
         level_func(message, stacklevel=3)
-
-    def _get_format_string(self, format_string: str, show_name_label: bool, show_place_label: bool) -> str:
-        format_string = format_string or self.default_format_string
-        if format_string != self.default_format_string:
-            return format_string
-        if not show_name_label:
-            format_string = format_string.replace("[%(name)s] ", "")
-        if not show_place_label:
-            format_string = format_string.replace("(%(module)s.%(funcName)s:%(lineno)d) ", "")
-        return format_string
