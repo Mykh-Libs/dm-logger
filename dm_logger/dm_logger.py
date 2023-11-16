@@ -4,16 +4,7 @@ import logging
 import os.path
 import sys
 import re
-
-
-class DebugInfoFilter(logging.Filter):
-    def filter(self, record):
-        return record.levelno in (logging.DEBUG, logging.INFO)
-
-
-class WarningErrorCriticalFilter(logging.Filter):
-    def filter(self, record):
-        return record.levelno in (logging.WARNING, logging.ERROR, logging.CRITICAL)
+from .filters import DebugInfoFilter, WarningErrorCriticalFilter
 
 
 class DMLogger:
