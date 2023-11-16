@@ -13,8 +13,8 @@ def get_rotating_file_handler(options: Options, formatter: logging.Formatter) ->
         os.makedirs(logs_dir_path)
     log_path = os.path.join(logs_dir_path, options.file_name)
     is_exists_log = os.path.exists(log_path)
-    file_handler = RotatingFileHandler(log_path, maxBytes=options.max_MB * 1024 * 1024,
-                                       backupCount=options.max_count)
+    file_handler = RotatingFileHandler(log_path, maxBytes=options.max_MB * 1024 * 1024, backupCount=options.max_count,
+                                       encoding="utf-8")
     if options.write_mode == "w" and is_exists_log:
         file_handler.doRollover()
     file_handler.setFormatter(formatter)
