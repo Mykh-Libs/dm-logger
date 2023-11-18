@@ -2,8 +2,7 @@ from logging.handlers import RotatingFileHandler
 import logging
 import os
 from .options import Options
-
-default_format_string = "%(asctime)s.%(msecs)03d [%(levelname)s] [%(name)s] (%(module)s.%(funcName)s:%(lineno)d) %(message)s"
+from .config import *
 
 
 def get_rotating_file_handler(options: Options, formatter: logging.Formatter) -> RotatingFileHandler:
@@ -26,7 +25,7 @@ def get_format_string(options: Options) -> str:
     if format_string != default_format_string:
         return format_string
     if not options.show_name_label:
-        format_string = format_string.replace("[%(name)s] ", "")
-    if not options.show_place_label:
-        format_string = format_string.replace("(%(module)s.%(funcName)s:%(lineno)d) ", "")
+        format_string = format_string.replace(name_fs, "")
+    if not options.show_location_label:
+        format_string = format_string.replace(location_fs, "")
     return format_string

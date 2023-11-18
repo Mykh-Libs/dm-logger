@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 
 
 class Options:
@@ -8,5 +8,5 @@ class Options:
     max_MB: int = 5
     max_count: int = 10
     show_name_label: bool = False
-    show_place_label: bool = False
+    show_location_label: Optional[bool] = False
     format_string: str = None

@@ -1,9 +1,9 @@
-from logging.handlers import RotatingFileHandler
 from typing import Callable
 import logging
 import re
 from .file_handlers import get_format_string, get_rotating_file_handler
 from .stream_handlers import get_stdout_handler, get_stderr_handler
+from .formaters import ErrorCriticalFormatter
 from .options import Options
 
 
@@ -27,7 +27,10 @@ class DMLogger:
         level = logging.getLevelName(level.upper())
         self._logger.setLevel(level)
         options = DMLogger.options
-        formatter = logging.Formatter(get_format_string(options), datefmt='%d-%m-%Y %H:%M:%S')
+        formatter_instance = ErrorCriticalFormatter
+        if options.show_location_label is None:
+            formatter_instance = logging.Formatter
+        formatter = formatter_instance(get_format_string(options), datefmt='%d-%m-%Y %H:%M:%S')
 
         if write_logs:
             if options.file_name in DMLogger._file_handlers:
