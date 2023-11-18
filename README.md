@@ -7,27 +7,27 @@
 
 ## Parameters
 
-* Class options
+### _Options for creating individual loggers_
 
-   ```python
-         logs_dir_path: str = "logs"  # log parent directories, leave blank to not write
-             file_name: str = ""  # log file name, default = <name>.log
-            write_mode: Literal["a", "w"] = "w"  # start with new file or continue old one
-                max_MB: int = 5  # max log file size (MB)
-             max_count: int = 10  # max count of saved logs
-       show_name_label: bool = False  # show logger name in the log message or not
-   show_location_label: Optional[bool] = False  # show location in the log message or not: True - anywhere, False - only for ERROR and CRITICAL, None - not
-         format_string: str = "%(asctime)s.%(msecs)03d [%(levelname)s] (%(module)s.%(funcName)s:%(lineno)d) %(message)s"
-   ```
+| Parameter    | Type   | Default Value | Description                                  |
+|--------------|--------|---------------|----------------------------------------------|
+| `name`       | `str`  | (required)    | The name associated with the class instance. |
+| `level`      | `str`  | `"DEBUG"`     | The logging level (e.g., "DEBUG", "INFO").   |
+| `write_logs` | `bool` | `True`        | Whether to write logs to a file.             |
+| `print_logs` | `bool` | `True`        | Whether to print logs to the console.        |
 
-* Init parameters
+### _Common class parameters for all loggers_
 
-   ```python
-            name: str  # logger name (*required)
-   logging_level: str = "DEBUG"  # min logging level
-      write_logs: bool = True  # write to file or not
-      print_logs: bool = True  # print to the console or not
-   ```
+| Parameter             | Type           | Default Value | Description                                           |
+|-----------------------|----------------|---------------|-------------------------------------------------------|
+| `logs_dir_path`       | `str`          | `"logs"`      | Path to the directory where the logs will be stored.  |
+| `file_name`           | `str`          | `"main.log"`  | The name of the log file.                             |
+| `write_mode`          | `"a" \| "w"`   | `"w"`         | File write mode ('a' for append, 'w' for overwrite).  |
+| `max_MB`              | `int`          | `5`           | Maximum size of the log file in MB.                   |
+| `max_count`           | `int`          | `10`          | Maximum number of log files.                          |
+| `show_name_label`     | `bool`         | `False`       | Whether to display the name label in log entries.     |
+| `show_location_label` | `bool \| None` | `False`       | Whether to display the location label in log entries. |
+| `format_string`       | `str`          | `None`        | The format string of the log.                         |
 
 ## Usage
 
@@ -58,6 +58,18 @@ logger.error(["item1", "item2", 3])
 logger.info()
 ```
 
+Output
+
+```textmate
+19-11-2023 00:49:03.406 [INFO] {tag: 'test tag'} -- test message
+19-11-2023 00:49:03.406 [DEBUG] {id: 123312} -- new message
+19-11-2023 00:49:03.407 [INFO] -- only mess
+19-11-2023 00:49:03.407 [CRITICAL] (test.<module>:8) {env: 'production'}
+19-11-2023 00:49:03.408 [WARNING] -- {'key': 'value'}
+19-11-2023 00:49:03.408 [ERROR] (test.<module>:10) -- ['item1', 'item2', 3]
+19-11-2023 00:49:03.409 [INFO]
+```
+
 ### Several loggers
 
 _All loggers will write to one file_
@@ -77,17 +89,17 @@ logger.error("App crashed!")
 
 Output
 
-```text
-16-11-2023 18:05:26.581 [INFO] [main] -- Start app
-16-11-2023 18:05:26.582 [ERROR] [main] -- App crashed!
+```textmate
+19-11-2023 00:56:36.879 [INFO] [main] -- Start app
+19-11-2023 00:56:36.880 [ERROR] [main] (test.<module>:10) -- App crashed!
 ```
 
 Log file
 
-```text
-16-11-2023 18:04:06.402 [INFO] [main] -- Start app
-16-11-2023 18:04:06.402 [DEBUG] [logger_2] {process_id: 123123}
-16-11-2023 18:04:06.402 [ERROR] [main] -- App crashed!
+```textmate
+19-11-2023 00:56:36.879 [INFO] [main] -- Start app
+19-11-2023 00:56:36.880 [DEBUG] [debugger] {process_id: 123123}
+19-11-2023 00:56:36.880 [ERROR] [main] (test.<module>:10) -- App crashed!
 ```
 
 ## Requirements
