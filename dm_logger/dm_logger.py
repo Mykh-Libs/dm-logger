@@ -4,53 +4,43 @@ import re
 from .file_handlers import get_format_string, get_rotating_file_handler
 from .stream_handlers import get_stdout_handler, get_stderr_handler
 from .formaters import ErrorCriticalFormatter
-from .options import Options
+from .config import Config
 
 
 class DMLogger:
-    options: Options = Options
-    _loggers: dict = {}
-    _file_handlers: dict = {}
+    config: Config = Config
+    __loggers: dict = {}
+    __file_handlers: dict = {}
+
+    def __new__(cls, name: str, *args, **kwargs):
+        if name not in cls.__loggers:
+            cls.__loggers[name] = super().__new__(cls)
+        return cls.__loggers[name]
 
     def __init__(
         self,
         name: str,
         level: str = "DEBUG",
+        *,
         write_logs: bool = True,
-        print_logs: bool = True
+        print_logs: bool = True,
+        file_name: str = None
     ):
-        if hasattr(self, '_initialized'):
-            return
-        self._initialized = True
-
         self._logger = logging.getLogger(name)
         level = logging.getLevelName(level.upper())
         self._logger.setLevel(level)
-        options = DMLogger.options
-        formatter_instance = ErrorCriticalFormatter
-        if options.show_location_label is None:
-            formatter_instance = logging.Formatter
-        formatter = formatter_instance(get_format_string(options), datefmt='%d-%m-%Y %H:%M:%S')
+        formatter_instance = ErrorCriticalFormatter if self.config.show_location_label == "auto" else logging.Formatter
+        formatter = formatter_instance(get_format_string(self.config), datefmt='%d-%m-%Y %H:%M:%S')
 
         if write_logs:
-            if options.file_name in DMLogger._file_handlers:
-                rotating_file_handler = DMLogger._file_handlers.get(options.file_name)
-            else:
-                rotating_file_handler = get_rotating_file_handler(options, formatter)
-                DMLogger._file_handlers[options.file_name] = rotating_file_handler
-            self._logger.addHandler(rotating_file_handler)
+            file_name = file_name or self.config.file_name
+            if file_name not in self.__file_handlers:
+                self.__file_handlers[file_name] = get_rotating_file_handler(file_name, self.config, formatter)
+            self._logger.addHandler(self.__file_handlers[file_name])
 
         if print_logs:
             self._logger.addHandler(get_stdout_handler(formatter))
             self._logger.addHandler(get_stderr_handler(formatter))
-
-    def __new__(cls, name, *args, **kwargs):
-        if name in cls._loggers:
-            return cls._loggers[name]
-        else:
-            instance = super(DMLogger, cls).__new__(cls)
-            cls._loggers[name] = instance
-            return instance
 
     def debug(self, message: any = None, **kwargs) -> None:
         self._log(self._logger.debug, message, **kwargs)

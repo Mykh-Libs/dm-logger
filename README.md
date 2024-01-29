@@ -9,37 +9,38 @@
 
 ### _Options for creating individual loggers_
 
-| Parameter    | Type   | Default Value | Description                                  |
-|--------------|--------|---------------|----------------------------------------------|
-| `name`       | `str`  | (required)    | The name associated with the class instance. |
-| `level`      | `str`  | `"DEBUG"`     | The logging level (e.g., "DEBUG", "INFO").   |
-| `write_logs` | `bool` | `True`        | Whether to write logs to a file.             |
-| `print_logs` | `bool` | `True`        | Whether to print logs to the console.        |
+| Parameter    | Type   | Default Value | Description                                 |
+|--------------|--------|---------------|---------------------------------------------|
+| `name`       | `str`  | (required)    | The name associated with the class instance |
+| `level`      | `str`  | `"DEBUG"`     | The logging level (e.g., "DEBUG", "INFO")   |
+| `write_logs` | `bool` | `True`        | Whether to write logs to a file             |
+| `print_logs` | `bool` | `True`        | Whether to print logs to the console        |
+| `file_name`  | `str`  | `None`        | The name of the log file                    |
 
 ### _Common class parameters for all loggers_
 
-| Parameter             | Type           | Default Value | Description                                           |
-|-----------------------|----------------|---------------|-------------------------------------------------------|
-| `logs_dir_path`       | `str`          | `"logs"`      | Path to the directory where the logs will be stored.  |
-| `file_name`           | `str`          | `"main.log"`  | The name of the log file.                             |
-| `write_mode`          | `"a" \| "w"`   | `"w"`         | File write mode ('a' for append, 'w' for overwrite).  |
-| `max_MB`              | `int`          | `5`           | Maximum size of the log file in MB.                   |
-| `max_count`           | `int`          | `10`          | Maximum number of log files.                          |
-| `show_name_label`     | `bool`         | `False`       | Whether to display the name label in log entries.     |
-| `show_location_label` | `bool \| None` | `False`       | Whether to display the location label in log entries. |
-| `format_string`       | `str`          | `None`        | The format string of the log.                         |
+| Parameter             | Type             | Default Value  | Description                                          |
+|-----------------------|------------------|----------------|------------------------------------------------------|
+| `logs_dir_path`       | `str`            | `"logs"`       | Path to the directory where the logs will be stored  |
+| `file_name`           | `str`            | `"main.log"`   | The name of the log file                             |
+| `write_mode`          | `"a" \| "w"`     | `"w"`          | File write mode ('a' for append, 'w' for overwrite)  |
+| `max_MB`              | `int`            | `5`            | Maximum size of the log file in MB                   |
+| `max_count`           | `int`            | `10`           | Maximum number of log files                          |
+| `show_name_label`     | `bool`           | `True`         | Whether to display the name label in log entries     |
+| `show_location_label` | `bool \| "auto"` | `"auto"`       | Whether to display the location label in log entries |
+| `format_string`       | `str`            | `None`         | The format string of the log                         |
 
 ## Usage
 
-### Setup class options
+### Setup class config
 
 _This options usage for all loggers_
 
 ```python
 from dm_logger import DMLogger
 
-DMLogger.options.show_name_label = True
-DMLogger.options.max_count = 5
+DMLogger.config.show_name_label = False
+DMLogger.config.max_count = 5
 ```
 
 ### Record
@@ -77,8 +78,6 @@ _All loggers will write to one file_
 ```python
 from dm_logger import DMLogger
 
-DMLogger.options.show_name_label = True
-
 logger = DMLogger("main", level="INFO")
 debugger = DMLogger("debugger", print_logs=False)
 
@@ -104,4 +103,4 @@ Log file
 
 ## Requirements
 
-Python 3.7 or higher.
+Python 3.8 or higher.

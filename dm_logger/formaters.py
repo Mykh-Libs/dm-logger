@@ -1,5 +1,5 @@
 import logging
-from .config import location_fs, message_fs
+from .fs_config import location_fs, message_fs
 
 
 class ErrorCriticalFormatter(logging.Formatter):
