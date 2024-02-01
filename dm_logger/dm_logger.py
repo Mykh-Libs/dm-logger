@@ -14,7 +14,6 @@ class DMLogger:
 
     def __new__(cls, name: str, *args, **kwargs):
         if name not in cls.__loggers:
-            print("crt")
             cls.__loggers[name] = super().__new__(cls)
         return cls.__loggers[name]
 
