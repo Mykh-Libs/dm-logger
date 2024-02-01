@@ -37,18 +37,18 @@
 _This config usage for all loggers_
 
 ```python
-from dm_logger import DMLoggerBuilder
+from dm_logger import DMLogger
 
-DMLoggerBuilder.config.show_name_label = False
-DMLoggerBuilder.config.max_count = 5
+DMLogger.config.show_name_label = False
+DMLogger.config.max_count = 5
 ```
 
 ### Record
 
 ```python
-from dm_logger import DMLoggerBuilder
+from dm_logger import DMLogger
 
-logger = DMLoggerBuilder.create("main")
+logger = DMLogger("main")
 
 logger.info("test message", tag="test tag")
 logger.debug("new message", id=123312)
@@ -76,10 +76,10 @@ Output
 _All loggers will write to one file_
 
 ```python
-from dm_logger import DMLoggerBuilder
+from dm_logger import DMLogger
 
-logger = DMLoggerBuilder.create("main", level="INFO")
-logger2 = DMLoggerBuilder.create("file_logger", print_logs=False)
+logger = DMLogger("main", level="INFO")
+logger2 = DMLogger("only_file", print_logs=False)
 
 logger.info("Start app")
 logger2.debug(process_id=123123)
@@ -97,7 +97,7 @@ Log file
 
 ```textmate
 19-11-2023 00:56:36.879 [INFO] [main] -- Start app
-19-11-2023 00:56:36.880 [DEBUG] [file_logger] {process_id: 123123}
+19-11-2023 00:56:36.880 [DEBUG] [only_file] {process_id: 123123}
 19-11-2023 00:56:36.880 [ERROR] [main] (test.<module>:10) -- App crashed!
 ```
 

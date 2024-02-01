@@ -1,3 +1,3 @@
-from .dm_logger import DMLoggerBuilder
+from .dm_logger import DMLogger
 
-__all__ = ["DMLoggerBuilder"]
+__all__ = ["DMLogger"]
