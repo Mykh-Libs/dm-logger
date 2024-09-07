@@ -22,9 +22,9 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent'
     ],
-    keywords='dm logger',
+    keywords='dm-logger',
     project_urls={
-        'GitHub': 'https://github.com/DIMKA4621/dm-logger'
+        'GitHub': 'https://github.com/MykhLibs/dm-logger'
     },
     python_requires='>=3.8'
 )

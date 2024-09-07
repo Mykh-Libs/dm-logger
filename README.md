@@ -3,7 +3,7 @@
 ## Urls
 
 * [PyPI](https://pypi.org/project/dm-logger/)
-* [GitHub](https://github.com/DIMKA4621/dm-logger)
+* [GitHub](https://github.com/MykhLibs/dm-logger)
 
 ## Parameters
 
